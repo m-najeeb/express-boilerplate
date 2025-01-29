@@ -18,6 +18,21 @@ class UserController {
       );
     }
   }
+
+  async editName(req, res) {
+    try {
+      const data = req.body;
+      const response = await userImplementation.editName(data);
+      res.status(ResponseService.status).send(response);
+    } catch (error) {
+      ResponseService.status = constants.CODE.INTERNAL_SERVER_ERROR;
+      return ResponseService.responseService(
+        constants.STATUS.EXCEPTION,
+        error.message,
+        messages.EXCEPTION
+      );
+    }
+  }
 }
 
 module.exports = new UserController();

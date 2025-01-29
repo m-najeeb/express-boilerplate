@@ -54,6 +54,43 @@ class UserImplementation {
       );
     }
   }
+
+  async editName(data) {
+    try {
+      const id = data.id;
+      const existingUser = await UserQueries.getUserDetailsById(id);
+
+      if (!existingUser) {
+        ResponseService.status = constants.CODE.BAD_REQUEST;
+        return ResponseService.responseService(
+          constants.STATUS.ERROR,
+          [],
+          messages.USER_NOT_FOUND
+        );
+      }
+
+      if (data.fullName) existingUser.fullName = data.fullName;
+
+      const response = await existingUser.save();
+
+      if (response) {
+        ResponseService.status = constants.CODE.OK;
+        return ResponseService.responseService(
+          constants.STATUS.SUCCESS,
+          response,
+          messages.BASIC_PROFILE_UPDATE
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      ResponseService.status = constants.CODE.INTERNAL_SERVER_ERROR;
+      return ResponseService.responseService(
+        constants.STATUS.EXCEPTION,
+        error.message,
+        messages.EXCEPTION
+      );
+    }
+  }
 }
 
 module.exports = new UserImplementation();
